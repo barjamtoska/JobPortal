@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}"/>
+{% endblock %}
+
+{% block content %}
+<div class="dash-wrap">
+
+  <aside class="dash-sidebar">
+    <div class="sidebar-profile">
+  <div class="profile-avatar" style="position:relative;cursor:pointer;" 
+       onclick="document.getElementById('logoInput').click()" title="Ndrysho logon">
+    {% if not user.is_candidate and user.employer_profile.logo %}
+      <img src="{{ user.employer_profile.logo.url }}" 
+           style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
+    {% else %}
+      {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+    {% endif %}
+    <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;
+                background:var(--green2);border-radius:50%;border:2px solid var(--white);
+                display:flex;align-items:center;justify-content:center;font-size:.6rem;">
+      ✏️
+    </div>
+  </div>
+  
+  {% if not user.is_candidate %}
+  <form method="POST" action="{% url 'update_logo' %}" enctype="multipart/form-data" id="logoForm">
+    {% csrf_token %}
+    <input type="file" name="logo" id="logoInput" accept="image/*" 
+           style="display:none;" onchange="document.getElementById('logoForm').submit()"/>
+  </form>
+  {% endif %}
+  
+  <div class="profile-name">{{ user.full_name }}</div>
+  <div class="profile-title">
+    {% if user.is_candidate %}
+      {{ user.candidate_profile.title|default:"Kandidat" }}
+    {% else %}
+      {{ user.employer_profile.company_name|default:"Punëdhënës" }}
+    {% endif %}
+  </div>
+</div>
+
+    <nav class="sidebar-nav">
+      {% if user.is_candidate %}
+        <a href="{% url 'job_list' %}" class="snav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+          Kërko Punë
+        </a>
+      {% else %}
+        <a href="{% url 'post_job' %}" class="snav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+          Posto Punë
+        </a>
+      {% endif %}
+      <a href="{% url 'logout' %}" class="snav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Dil
+      </a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+    <div class="dash-section-title">
+      Mirë se erdhe, {{ user.first_name|default:user.email }} 👋
+    </div>
+
+    {% if user.is_candidate %}
+
+
+    <!-- APLIKIMET -->
+    <div class="dash-card" style="margin-top:20px;">
+      
+      <div class="card-header">
+        <span class="card-title">Aplikimet e Fundit</span>
+        <a href="{% url 'job_list' %}" class="card-link">Shfleto punë →</a>
+      </div>
+      
+      {% for app in applications|slice:":5" %}
+<div class="app-item">
+  <div class="app-logo">
+  {% if app.job.employer.employer_profile.logo %}
+    <img src="{{ app.job.employer.employer_profile.logo.url }}" 
+         style="width:100%;height:100%;object-fit:contain;border-radius:8px;"/>
+  {% else %}
+    🏢
+  {% endif %}
+</div>
+  <div>
+    <div class="app-title">{{ app.job.title }}</div>
+    <div class="app-company">{{ app.job.employer_company }}</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+    <span class="app-status status-{{ app.status }}">{{ app.get_status_display }}</span>
+    {% if app.job.is_active %}
+    <a href="{% url 'job_detail' app.job.pk %}"
+       style="font-size:.78rem;padding:5px 12px;border:1.5px solid var(--border);border-radius:7px;color:var(--text);text-decoration:none;">
+      Shiko →
+    </a>
+    {% else %}
+    <span style="font-size:.75rem;color:var(--muted);font-style:italic;">Punë e mbyllur</span>
+    <a href="{% url 'remove_application' app.pk %}"
+       onclick="return confirm('Hiq këtë aplikim nga lista?')"
+       style="font-size:.75rem;padding:5px 12px;border:1.5px solid #FC8181;border-radius:7px;color:#E53E3E;text-decoration:none;">
+      ✕ Hiq
+    </a>
+    {% endif %}
+  </div>
+</div>
+      {% empty %}
+      <p style="color:var(--muted);text-align:center;padding:32px 0;font-size:.88rem;">
+        Nuk ke aplikime akoma. <a href="{% url 'job_list' %}" style="color:var(--green)">Shfleto punët →</a>
+      </p>
+      {% endfor %}
+    </div>
+
+    <!-- PUNËT E RUAJTURA -->
+    <div class="dash-card" style="margin-top:16px;">
+      <div class="card-header">
+        <span class="card-title">Punët e Ruajtura</span>
+        <a href="{% url 'job_list' %}" class="card-link">Shfleto punë →</a>
+      </div>
+      {% for job in saved_jobs|slice:":5" %}
+      <div class="app-item">
+        <div class="app-logo">
+  {% if app.job.employer.employer_profile.logo %}
+    <img src="{{ app.job.employer.employer_profile.logo.url }}" 
+         style="width:100%;height:100%;object-fit:contain;border-radius:8px;"/>
+  {% else %}
+    🏢
+  {% endif %}
+</div>
+        <div>
+          <div class="app-title">{{ job.title }}</div>
+          <div class="app-company">{{ job.employer_company }} · {{ job.location }}</div>
+        </div>
+        <a href="{% url 'job_detail' job.pk %}"
+           style="margin-left:auto;font-size:.78rem;padding:5px 12px;border:1.5px solid var(--green2);border-radius:7px;color:var(--green);text-decoration:none;">
+          Shiko →
+        </a>
+      </div>
+      {% empty %}
+      <p style="color:var(--muted);text-align:center;padding:24px 0;font-size:.88rem;">
+        Nuk ke punë të ruajtura. <a href="{% url 'job_list' %}" style="color:var(--green)">Shfleto punët →</a>
+      </p>
+      {% endfor %}
+    </div>
+
+    {% else %}
+
+    <!-- STATISTIKAT PUNËDHËNËS -->
+    <div class="dash-stats-row">
+      <div class="dstat-card">
+        <div class="dstat-icon" style="background:#EBF5FF;color:#3182CE">💼</div>
+        <div class="dstat-val">{{ user.jobs.count }}</div>
+        <div class="dstat-lbl">Punë Aktive</div>
+      </div>
+    </div>
+
+    <!-- PUNËT E MIA -->
+    <div class="dash-card" style="margin-top:20px;">
+      <div class="card-header">
+        <span class="card-title">Punët e Mia</span>
+        <a href="{% url 'post_job' %}" class="card-link">Posto punë →</a>
+      </div>
+      {% for job in jobs|slice:":5" %}
+      <div class="app-item">
+        <div class="app-logo">
+  {% if job.employer.employer_profile.logo %}
+    <img src="{{ job.employer.employer_profile.logo.url }}"
+         style="width:100%;height:100%;object-fit:contain;border-radius:8px;"/>
+  {% else %}
+    💼
+  {% endif %}
+</div>
+        <div>
+          <div class="app-title">{{ job.title }}</div>
+          <div class="app-company">{{ job.applications.count }} aplikime</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
+          <span class="app-status status-review">{% if job.is_active %}Aktive{% else %}Mbyllur{% endif %}</span>
+          {% if job.is_active %}
+          <a href="{% url 'edit_job' job.pk %}" style="font-size:.75rem;padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;color:var(--text);text-decoration:none;">✏️ Ndrysho</a>
+          <a href="{% url 'close_job' job.pk %}" style="font-size:.75rem;padding:4px 10px;border:1.5px solid #FC8181;border-radius:6px;color:#E53E3E;text-decoration:none;"
+             onclick="return confirm('Mbyll këtë punë?')">✕ Mbyll</a>
+          {% endif %}
+          <a href="{% url 'job_applications' job.pk %}" style="font-size:.75rem;padding:4px 10px;border:1.5px solid var(--green2);border-radius:6px;color:var(--green);text-decoration:none;">
+            👥 Aplikimet ({{ job.applications.count }})
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--muted);text-align:center;padding:32px 0;">
+        Nuk ke punë të postuara. <a href="{% url 'post_job' %}" style="color:var(--green)">Posto tani →</a>
+      </p>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}" defer></script>
+{% endblock %}

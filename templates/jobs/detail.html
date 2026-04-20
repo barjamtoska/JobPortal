@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/jobs.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+{% if not job.is_active %}
+<div style="max-width:600px;margin:80px auto;text-align:center;padding:0 24px;">
+  <div style="font-size:3rem;margin-bottom:16px;">📭</div>
+  <h2 style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:10px;">
+    Ky vend pune nuk është më aktiv
+  </h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-bottom:24px;">
+    Vendi i punës është mbyllur ose fshirë nga punëdhënësi.
+  </p>
+  <a href="{% url 'job_list' %}" class="btn-primary" style="display:inline-block;padding:10px 24px;text-decoration:none;">
+    Shfleto punë të tjera →
+  </a>
+</div>
+{% else %}
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="{% url 'index' %}">Kryefaqe</a>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M9 18l6-6-6-6"/></svg>
+    <a href="{% url 'job_list' %}">Vende Pune</a>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M9 18l6-6-6-6"/></svg>
+    <span>{{ job.title }}</span>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <div class="main-col">
+
+    <div class="hero-card">
+      <div class="hero-top">
+        <div class="company-logo-lg">🏢</div>
+        <div class="hero-title-block">
+          <div class="job-badges">
+            {% if job.days_ago == 0 %}<span class="badge badge-new">I Ri</span>{% endif %}
+            {% if job.is_urgent %}<span class="badge badge-urgent">🔴 Urgjent</span>{% endif %}
+            {% if job.is_featured %}<span class="badge badge-featured">⭐ Featured</span>{% endif %}
+          </div>
+          <h1 class="hero-job-title">{{ job.title }}</h1>
+          <div class="hero-company">{{ job.employer_company }}</div>
+        </div>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-item">
+          <div class="meta-item-icon">📍</div>
+          <div class="meta-item-text">
+            <span class="meta-item-label">Vendndodhja</span>
+            <span class="meta-item-val">{{ job.location }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-icon">🏢</div>
+          <div class="meta-item-text">
+            <span class="meta-item-label">Kontrata</span>
+            <span class="meta-item-val">{{ job.contract_type }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-icon">⭐</div>
+          <div class="meta-item-text">
+            <span class="meta-item-label">Eksperienca</span>
+            <span class="meta-item-val">{{ job.get_experience_display }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-item-icon">📅</div>
+          <div class="meta-item-text">
+            <span class="meta-item-label">Publikuar</span>
+            <span class="meta-item-val">
+              {% if job.days_ago == 0 %}Sot{% elif job.days_ago == 1 %}Dje{% else %}{{ job.days_ago }} ditë më parë{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="salary-highlight">
+        <div>
+          <div class="salary-label-sm">Paga Mujore</div>
+          <div class="salary-amount">{{ job.salary_display }}</div>
+        </div>
+        {% if job.deadline %}
+        <div class="deadline-block">
+          <div class="deadline-label">Afati</div>
+          <div class="deadline-date">{{ job.deadline|date:"d M Y" }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h2 class="section-title">Përshkrimi i Punës</h2>
+      <div class="prose">{{ job.description|linebreaks }}</div>
+    </div>
+
+    {% if job.requirements %}
+    <div class="content-card">
+      <h2 class="section-title">Kualifikimet</h2>
+      <div class="prose">{{ job.requirements|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    {% if job.benefits %}
+    <div class="content-card">
+      <h2 class="section-title">Përfitimet</h2>
+      <div class="prose">{{ job.benefits|linebreaks }}</div>
+    </div>
+    {% endif %}
+
+    {% if similar_jobs %}
+    <div class="similar-section">
+      <div class="section-head-row">
+        <h2>Punë të Ngjashme</h2>
+        <a href="{% url 'job_list' %}?category={{ job.category }}" class="view-all-link">Shiko të gjitha →</a>
+      </div>
+      <div class="similar-grid">
+        {% for j in similar_jobs %}
+        <a href="{% url 'job_detail' j.pk %}" class="sim-card" style="text-decoration:none;color:inherit;">
+          <div class="sim-top">
+            <div class="sim-logo">🏢</div>
+            <div>
+              <div class="sim-title">{{ j.title }}</div>
+              <div class="sim-company">{{ j.employer_company }}</div>
+            </div>
+             {% if user.is_authenticated and user.is_candidate %}
+  {% if user in job.saved_by.all %}
+  <button class="btn-save saved" data-pk="{{ job.pk }}" data-saved="1" title="Hiq nga të ruajtura">
+  {% else %}
+  <button class="btn-save" data-pk="{{ job.pk }}" data-saved="0" title="Ruaj punën">
+  {% endif %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+  </button>
+{% endif %}
+          </div>
+          <div class="sim-footer">
+            <div class="sim-salary">{{ j.salary_display }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <aside class="side-col">
+    <div class="apply-card">
+      <div class="apply-card-title">Apliko për këtë punë</div>
+      <div class="apply-card-sub">Dërgo aplikimin te {{ job.employer_company }}</div>
+      {% if user.is_authenticated %}
+  {% if user.is_candidate %}
+    <form method="POST" action="{% url 'apply_job' job.pk %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">CV * (i detyrueshëm)</label>
+<input type="file" name="cv" accept=".pdf,.doc,.docx" required
+       style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:9px;font-size:.85rem;"/>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">Letër Motivimi (opsionale)</label>
+        <textarea name="cover_note" class="form-input" rows="4"
+                  placeholder="Pse je kandidati ideal për këtë pozicion?"></textarea>
+      </div>
+      <button type="submit" class="btn-apply-lg">
+        🚀 Apliko Tani
+      </button>
+    </form>
+  {% else %}
+    <div style="background:#FFFBEB;border-radius:10px;padding:12px;text-align:center;color:#92400E;font-size:.85rem;">
+      ⚠️ Vetëm kandidatët mund të aplikojnë.
+    </div>
+  {% endif %}
+{% else %}
+        <a href="{% url 'login' %}?next={{ request.path }}" class="btn-apply-lg" style="display:flex;text-decoration:none;justify-content:center;">
+          Hyr për të Aplikuar
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="company-card">
+      <div class="company-header">
+        <div class="company-logo-md">🏢</div>
+        <div>
+          <div class="company-name">{{ job.employer_company }}</div>
+          <div class="company-industry">{{ job.get_category_display }}</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-save');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const pk = btn.dataset.pk;
+  fetch(`/jobs/${pk}/save/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+  })
+  .then(r => r.json())
+  .then(data => {
+    btn.classList.toggle('saved', data.saved);
+    btn.title = data.saved ? 'Hiq nga të ruajtura' : 'Ruaj punën';
+    showToast(data.saved ? '🔖 Puna u ruajt!' : 'U hoq nga të ruajtura');
+  });
+});
+</script>
+{% endblock extra_js %}

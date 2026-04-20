@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Aplikimet — {{ job.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width:900px; margin:40px auto; padding:0 24px 80px;">
+
+  <div style="margin-bottom:24px;">
+    <a href="{% url 'dashboard' %}" style="color:var(--green);font-size:.85rem;">← Dashboard</a>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+    <div>
+      <h1 style="font-family:var(--font-head);font-size:1.6rem;font-weight:800;color:var(--navy);margin-bottom:4px;">
+        Aplikimet — {{ job.title }}
+      </h1>
+      <p style="color:var(--muted);font-size:.88rem;">
+        {{ applications.count }} aplikim{{ applications.count|pluralize:",e" }} total
+      </p>
+    </div>
+    <a href="{% url 'job_detail' job.pk %}" 
+       style="padding:8px 16px;border:1.5px solid var(--border);border-radius:9px;font-size:.85rem;color:var(--text);">
+      Shiko Punën →
+    </a>
+  </div>
+
+  {% if applications %}
+  <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--cream);">
+          <th style="text-align:left;padding:12px 20px;font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Kandidati</th>
+          <th style="text-align:left;padding:12px 20px;font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Data</th>
+          <th style="text-align:left;padding:12px 20px;font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">CV</th>
+          <th style="text-align:left;padding:12px 20px;font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Statusi</th>
+          <th style="text-align:left;padding:12px 20px;font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Veprime</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+        <tr style="border-top:1px solid var(--border);">
+          <td style="padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--navy);
+                          color:#fff;font-family:var(--font-head);font-weight:700;
+                          display:flex;align-items:center;justify-content:center;font-size:.9rem;">
+                {{ app.candidate.first_name.0|upper }}{{ app.candidate.last_name.0|upper }}
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;color:var(--navy);">{{ app.candidate.full_name }}</div>
+                <div style="font-size:.78rem;color:var(--muted);">{{ app.candidate.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="padding:16px 20px;font-size:.85rem;color:var(--muted);">
+            {{ app.applied_at|date:"d M Y" }}
+          </td>
+          <td style="padding:16px 20px;">
+            {% if app.cv %}
+            <a href="{{ app.cv.url }}" target="_blank"
+               style="font-size:.82rem;color:var(--green);font-weight:600;">
+              📄 Shiko CV
+            </a>
+            {% else %}
+            <span style="font-size:.82rem;color:var(--muted);">—</span>
+            {% endif %}
+          </td>
+          <td style="padding:16px 20px;">
+            <span style="padding:4px 10px;border-radius:100px;font-size:.75rem;font-weight:600;"
+  class="app-status-badge status-{{ app.status }}">
+  {{ app.get_status_display }}
+</span>
+          </td>
+          <td style="padding:16px 20px;">
+            <form method="POST" action="{% url 'update_application_status' app.pk %}" style="display:flex;gap:6px;align-items:center;">
+              {% csrf_token %}
+              <select name="status" onchange="this.form.submit()"
+                      style="padding:5px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.78rem;background:var(--white);cursor:pointer;">
+                <option value="new"       {% if app.status == 'new' %}selected{% endif %}>I Ri</option>
+                <option value="review"    {% if app.status == 'review' %}selected{% endif %}>Shqyrtim</option>
+                <option value="interview" {% if app.status == 'interview' %}selected{% endif %}>Intervistë</option>
+                <option value="accepted"  {% if app.status == 'accepted' %}selected{% endif %}>Pranuar</option>
+                <option value="rejected"  {% if app.status == 'rejected' %}selected{% endif %}>Refuzuar</option>
+              </select>
+            </form>
+          </td>
+        </tr>
+        {% if app.cover_note %}
+        <tr style="border-top:1px solid var(--border);background:#FAFAFA;">
+          <td colspan="5" style="padding:10px 20px 14px 72px;">
+            <div style="font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:4px;">LETËR MOTIVIMI</div>
+            <div style="font-size:.85rem;color:var(--text);line-height:1.6;">{{ app.cover_note }}</div>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+  <div style="text-align:center;padding:60px;background:var(--white);border:1.5px solid var(--border);border-radius:14px;">
+    <div style="font-size:2.5rem;margin-bottom:12px;opacity:.4;">📭</div>
+    <h3 style="font-family:var(--font-head);font-weight:700;color:var(--navy);margin-bottom:8px;">Asnjë aplikim akoma</h3>
+    <p style="color:var(--muted);font-size:.88rem;">Ndaj punën për të marrë aplikime.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h4>JobPortal</h4>
+        <p>Platforma moderne që lidh profesionistët me mundësitë e duhura karriere.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Për Kandidatët</h5>
+        <ul>
+          <li><a href="{% url 'job_list' %}">Shfleto Punët</a></li>
+          <li><a href="{% url 'login' %}?tab=register">Regjistrohu</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Kompania</h5>
+        <ul>
+          <li><a href="{% url 'about' %}">Rreth Nesh</a></li>
+          <li><a href="{% url 'contact' %}">Kontakt</a></li>
+          <li><a href="{% url 'terms' %}">Kushtet</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {% now "Y" %} JobPortal. Të gjitha të drejtat e rezervuara.</span>
+    </div>
+  </div>
+</footer>

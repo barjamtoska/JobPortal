@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kontakt{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="section-label">Kontakt</span>
+    <h1>Si mund të<br><em>ndihmojmë?</em></h1>
+    <p>Jemi këtu për çdo pyetje, sugjerim apo bashkëpunim.</p>
+  </div>
+</div>
+
+<section class="contact-section">
+  <div class="contact-inner">
+
+    <div class="contact-info fade-in">
+      <div class="info-block">
+        <h2>Na kontakto</h2>
+        <p>Plotëso formularin dhe do të kthehemi me përgjigje brenda 24 orëve.</p>
+      </div>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="cc-icon">📧</div>
+          <div>
+            <div class="cc-label">Email</div>
+            <a href="mailto:info@jobportal.al" class="cc-val">info@jobportal.al</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">📞</div>
+          <div>
+            <div class="cc-label">Telefon</div>
+            <a href="tel:+355691234567" class="cc-val">+355 69 123 4567</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">📍</div>
+          <div>
+            <div class="cc-label">Adresa</div>
+            <span class="cc-val">Rr. Ismail Qemali, Nr. 12<br>Tiranë, Shqipëri</span>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">🕐</div>
+          <div>
+            <div class="cc-label">Orari</div>
+            <span class="cc-val">E Hënë – E Premte<br>09:00 – 17:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap fade-in">
+      <div class="form-card" id="formCard">
+
+        {% if contact_success %}
+        <div class="form-success visible" id="formSuccess">
+          <div class="success-icon">✓</div>
+          <h3>Mesazhi u dërgua!</h3>
+          <p>Faleminderit që na kontaktove. Do të kthehemi brenda <strong>24 orëve</strong>.</p>
+          <a href="{% url 'contact' %}" class="btn-primary" style="margin-top:20px;padding:10px 28px;display:inline-block;text-decoration:none;">
+            Dërgo mesazh tjetër
+          </a>
+        </div>
+        {% else %}
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Emri *</label>
+              <input type="text" name="name" class="form-input" placeholder="Emri juaj" required/>
+            </div>
+            <div class="form-group">
+              <label>Mbiemri *</label>
+              <input type="text" name="last_name" class="form-input" placeholder="Mbiemri juaj" required/>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" class="form-input" placeholder="emri@email.com" required/>
+            </div>
+            <div class="form-group">
+              <label>Telefon <span class="opt">(opsionale)</span></label>
+              <input type="tel" name="phone" class="form-input" placeholder="+355 6X XXX XXXX"/>
+            </div>
+            <div class="form-group full">
+              <label>Subjekti *</label>
+              <input type="text" name="subject" class="form-input" placeholder="Tema e mesazhit..." required/>
+            </div>
+            <div class="form-group full">
+              <label>Mesazhi *</label>
+              <textarea name="message" class="form-input" rows="5" placeholder="Shkruaj mesazhin këtu..." required></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn-send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+            Dërgo Mesazhin
+          </button>
+        </form>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="section-inner">
+    <div class="section-head fade-in" style="text-align:center; max-width:480px; margin:0 auto 48px;">
+      <span class="section-label">FAQ</span>
+      <h2>Pyetjet më të shpeshta</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Si mund të publikoj një vend pune?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a">
+          <p>Regjistrohu si punëdhënës dhe kliko "Posto Punë" nga dashboardi yt.</p>
+        </div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          A është falas regjistrimi për kandidatët?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a">
+          <p>Po, regjistrimi dhe kërkimi i vendeve të punës është plotësisht falas.</p>
+        </div>
+      </div>
+      <div class="faq-item fade-in">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Sa kohë duhet që aplikimi të shikohet?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a">
+          <p>Aplikimi dërgohet menjëherë. Kompania zakonisht përgjigjet brenda 48-72 orëve.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/contact.js' %}" defer></script>
+{% endblock %}

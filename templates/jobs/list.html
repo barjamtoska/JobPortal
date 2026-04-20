@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vende Pune{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/jobs.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <form method="GET" style="display:contents">
+        <input type="text" name="q" value="{{ q }}" placeholder="Titulli, aftësia ose kompania…" onchange="this.form.submit()"/>
+        {% if location %}<input type="hidden" name="location" value="{{ location }}">{% endif %}
+        {% if category %}<input type="hidden" name="category" value="{{ category }}">{% endif %}
+      </form>
+    </div>
+    <div class="topbar-divider"></div>
+    <form method="GET" style="display:contents">
+      {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+      <select class="topbar-select" name="location" onchange="this.form.submit()">
+        <option value="">📍 Të gjitha qytetet</option>
+        {% for val, label in cities %}
+          <option value="{{ val }}" {% if location == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <select class="topbar-select" name="category" onchange="this.form.submit()">
+        <option value="">🗂 Të gjitha kategoritë</option>
+        {% for val, label in categories %}
+          <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+</div>
+
+<div class="page-body">
+  <!-- Butoni mobile -->
+<button class="btn-mobile-filter" onclick="openDrawer()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="6" y1="12" x2="18" y2="12"/>
+    <line x1="9" y1="18" x2="15" y2="18"/>
+  </svg>
+  Filtrat
+</button>
+
+<!-- Overlay -->
+<div class="filter-overlay" id="filterOverlay" onclick="closeDrawer()"></div>
+
+<!-- Drawer -->
+<div class="filter-drawer" id="filterDrawer">
+  <div class="filter-drawer-header">
+    <h3>Filtrat</h3>
+    <button class="filter-drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <form method="GET" id="mobileFilterForm">
+    {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+    <input type="hidden" name="_sidebar" value="1">
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Kategoria</div>
+      {% for val, label in categories %}
+      <label class="check-item {% if val in categories_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="category" value="{{ val }}"
+                 {% if val in categories_sel %}checked{% endif %} style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Vendodhja</div>
+      {% for val, label in cities %}
+      <label class="check-item {% if val in locations_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="location" value="{{ val }}"
+                 {% if val in locations_sel %}checked{% endif %} style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Eksperienca</div>
+      {% for val, label in experiences %}
+      <label class="check-item {% if val in experiences_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="experience" value="{{ val }}"
+                 {% if val in experiences_sel %}checked{% endif %} style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Kontrata</div>
+      {% for val, label in contracts %}
+      <label class="check-item {% if val in contracts_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="contract" value="{{ val }}"
+                 {% if val in contracts_sel %}checked{% endif %} style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <button type="submit" style="width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:8px;">
+      🔍 Apliko Filtrat
+    </button>
+    <a href="{% url 'job_list' %}" style="display:block;text-align:center;margin-top:8px;padding:10px;border:1.5px solid var(--border);border-radius:9px;font-size:.85rem;color:var(--muted);">
+      ✕ Pastro
+    </a>
+  </form>
+</div>
+
+<aside class="sidebar">
+  <form method="GET" id="filterForm">
+    {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+    {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Kategoria</div>
+      {% for val, label in categories %}
+      <label class="check-item {% if val in categories_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="category" value="{{ val }}"
+                 {% if val in categories_sel %}checked{% endif %}
+                 style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Vendodhja</div>
+      {% for val, label in cities %}
+      <label class="check-item {% if val in locations_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="location" value="{{ val }}"
+                 {% if val in locations_sel %}checked{% endif %}
+                 style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Eksperienca</div>
+      {% for val, label in experiences %}
+      <label class="check-item {% if val in experiences_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="experience" value="{{ val }}"
+                 {% if val in experiences_sel %}checked{% endif %}
+                 style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Lloji i Kontratës</div>
+      {% for val, label in contracts %}
+      <label class="check-item {% if val in contracts_sel %}checked{% endif %}">
+        <div class="check-item-left">
+          <input type="checkbox" name="contract" value="{{ val }}"
+                 {% if val in contracts_sel %}checked{% endif %}
+                 style="display:none"/>
+          <div class="check-box"></div>
+          <span class="check-label">{{ label }}</span>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Paga (ALL/muaj)</div>
+      <div class="salary-inputs">
+        <input type="number" name="salary_min" class="form-input"
+               placeholder="Min" value="{{ salary_min }}" step="10000"/>
+        <span class="sep">—</span>
+        <input type="number" name="salary_max" class="form-input"
+               placeholder="Max" value="{{ salary_max }}" step="10000"/>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <button type="submit" style="width:100%;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:var(--font-body);font-size:.88rem;font-weight:600;">
+        🔍 Apliko Filtrat
+      </button>
+      <a href="{% url 'job_list' %}" style="display:block;text-align:center;margin-top:8px;padding:8px;border:1.5px solid var(--border);border-radius:9px;font-size:.82rem;color:var(--muted);text-decoration:none;">
+        ✕ Pastro të gjitha
+      </a>
+    </div>
+
+  </form>
+</aside>
+
+  <main class="main-content">
+    <div class="results-header">
+      <div class="results-info">
+        <h1>Vende Pune <span id="resultsCount">— {{ total }} rezultate</span></h1>
+      </div>
+      <div class="sort-bar">
+        <span class="sort-label">Rendit:</span>
+        <a href="?{% if q %}q={{ q }}&{% endif %}{% if location %}location={{ location }}&{% endif %}sort=recent" class="sort-btn {% if sort == 'recent' or not sort %}active{% endif %}">Më të Reja</a>
+        <a href="?{% if q %}q={{ q }}&{% endif %}{% if location %}location={{ location }}&{% endif %}sort=salary" class="sort-btn {% if sort == 'salary' %}active{% endif %}">Paga</a>
+      </div>
+    </div>
+
+    <div id="jobsList">
+      {% for job in page_obj %}
+      <a href="{% url 'job_detail' job.pk %}" class="job-card" style="text-decoration:none;color:inherit;">
+        <div class="company-logo">🏢</div>
+        <div class="job-info">
+          <div class="job-title">{{ job.title }}</div>
+          <div class="job-company-name">{{ job.employer_company }}</div>
+          <div class="job-meta">
+            <span class="meta-tag">📍 {{ job.location }}</span>
+            <span class="meta-tag">🏢 {{ job.contract_type }}</span>
+            <span class="meta-tag">⭐ {{ job.get_experience_display }}</span>
+          </div>
+        </div>
+        <div class="job-right">
+          {% if user.is_authenticated and user.is_candidate %}
+  {% if user in job.saved_by.all %}
+  <button class="btn-save saved" data-pk="{{ job.pk }}" data-saved="1" title="Hiq nga të ruajtura">
+  {% else %}
+  <button class="btn-save" data-pk="{{ job.pk }}" data-saved="0" title="Ruaj punën">
+  {% endif %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    </svg>
+  </button>
+{% endif %}
+          <div class="job-salary">{{ job.salary_display }}</div>
+          <div class="job-posted">
+            {% if job.days_ago == 0 %}Sot{% elif job.days_ago == 1 %}Dje{% else %}{{ job.days_ago }} ditë{% endif %}
+          </div>
+        </div>
+      </a>
+      {% empty %}
+      <div class="empty-state visible">
+        <div class="empty-icon">🔍</div>
+        <h3>Asnjë rezultat</h3>
+        <p>Provo të ndryshosh filtrat.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">‹</a>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        <a href="?page={{ num }}" class="page-btn {% if page_obj.number == num %}active{% endif %}">{{ num }}</a>
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn">›</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.check-item').forEach(label => {
+  label.addEventListener('click', function() {
+    const checkbox = this.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    this.classList.toggle('checked', checkbox.checked);
+  });
+});
+</script>
+<script>
+// Auto-submit nëse ka filtra nga hero
+document.addEventListener('DOMContentLoaded', function() {
+  const params = new URLSearchParams(window.location.search);
+  const hasFilters = params.has('category') || params.has('location');
+  const fromSidebar = params.has('_sidebar');
+  
+  if (hasFilters && !fromSidebar) {
+    // Sinkronizo checkbox-et me URL params
+    params.getAll('category').forEach(val => {
+      const cb = document.querySelector(`input[name="category"][value="${val}"]`);
+      if (cb) {
+        cb.checked = true;
+        cb.closest('.check-item')?.classList.add('checked');
+      }
+    });
+    params.getAll('location').forEach(val => {
+      const cb = document.querySelector(`input[name="location"][value="${val}"]`);
+      if (cb) {
+        cb.checked = true;
+        cb.closest('.check-item')?.classList.add('checked');
+      }
+    });
+    // Submit automatikisht
+    const form = document.getElementById('filterForm');
+    if (form) {
+      const hidden = document.createElement('input');
+      hidden.type = 'hidden';
+      hidden.name = '_sidebar';
+      hidden.value = '1';
+      form.appendChild(hidden);
+      form.submit();
+    }
+  }
+});
+</script>
+<script>
+  function openDrawer() {
+  document.getElementById('filterDrawer').classList.add('open');
+  document.getElementById('filterOverlay').classList.add('open');
+  document.querySelectorAll('#filterDrawer .check-item').forEach(label => {
+    label.onclick = function() {
+      const cb = this.querySelector('input[type="checkbox"]');
+      cb.checked = !cb.checked;
+      this.classList.toggle('checked', cb.checked);
+    };
+  });
+}
+function closeDrawer() {
+  document.getElementById('filterDrawer').classList.remove('open');
+  document.getElementById('filterOverlay').classList.remove('open');
+}
+</script>
+<script>
+  document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-save');
+  if (!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const pk = btn.dataset.pk;
+  fetch(`/jobs/${pk}/save/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+  })
+  .then(r => r.json())
+  .then(data => {
+    btn.classList.toggle('saved', data.saved);
+    btn.title = data.saved ? 'Hiq nga të ruajtura' : 'Ruaj punën';
+    showToast(data.saved ? ' Puna u ruajt!' : 'U hoq nga të ruajtura');
+  });
+});
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--navy);color:#fff;padding:11px 22px;border-radius:10px;
+    font-size:.85rem;font-weight:500;z-index:9999;`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+</script>
+{% endblock %}

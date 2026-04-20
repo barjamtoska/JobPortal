@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rreth Nesh{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}"/>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="section-label">Rreth Nesh</span>
+    <h1>Platforma që lidh<br>talentin me <em>mundësinë</em></h1>
+    <p>JobPortal është ndërtuar me një qëllim të vetëm: t'i bëjë lehtë çdo shqiptar të gjejë punën e duhur dhe çdo kompani të gjejë njerëzit e duhur.</p>
+  </div>
+</div>
+
+<section class="mission-section">
+  <div class="section-inner">
+    <div class="mission-grid">
+      <div class="mission-text fade-in">
+        <span class="section-label">Misioni Ynë</span>
+        <h2>Pse ekziston JobPortal?</h2>
+        <p>Tregu i punës në Shqipëri po ndryshon me shpejtësi. Kompanitë po rriten, profesionistët po kërkojnë mundësi të reja, dhe nevoja për një platformë moderne është më e madhe se kurrë.</p>
+        <p>JobPortal u krijua për të mbushur këtë boshllëk — duke ofruar një hapësirë dixhitale ku kandidatët dhe punëdhënësit gjejnë njëri-tjetrin me lehtësi dhe shpejtësi.</p>
+      </div>
+      <div class="mission-values">
+        <div class="value-item">
+          <div class="value-icon">🎯</div>
+          <div>
+            <strong>Saktësi</strong>
+            <span>Punë të filtruar sipas profilit tënd</span>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🔒</div>
+          <div>
+            <strong>Besueshmëri</strong>
+            <span>Kompani të verifikuara, të dhëna reale</span>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">⚡</div>
+          <div>
+            <strong>Shpejtësi</strong>
+            <span>Apliko direkt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="about-cta">
+  <div class="about-cta-inner fade-in">
+    <h2>Gati të fillosh?</h2>
+    <p>Bashkohu me mijëra profesionistë dhe kompani që tashmë po përdorin JobPortal.</p>
+    <div class="cta-btns">
+      <a href="{% url 'job_list' %}" class="btn-primary cta-btn">Shfleto Punët</a>
+      <a href="{% url 'login' %}?tab=register" class="btn-ghost cta-btn-ghost">Regjistrohu Falas</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/about.js' %}" defer></script>
+{% endblock %}

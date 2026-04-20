@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}JobPortal{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include 'partials/navbar.html' %}
+
+  {% block content %}{% endblock %}
+
+  {% include 'partials/footer.html' %}
+
+  {% block extra_js %}{% endblock %}
+
+  {% if messages %}
+{% for msg in messages %}
+{% if 'success' in msg.tags %}
+<div id="successPopup" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;padding:14px 28px;border-radius:12px;
+  font-size:.9rem;font-weight:500;z-index:9999;
+  box-shadow:0 8px 32px rgba(13,27,42,.2);
+  display:flex;align-items:center;gap:10px;">
+  ✅ {{ msg }}
+  <button onclick="this.parentElement.remove()" 
+          style="background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1.1rem;margin-left:8px;">✕</button>
+</div>
+<script>
+  setTimeout(() => {
+    const p = document.getElementById('successPopup');
+    if (p) p.remove();
+  }, 4000);
+</script>
+{% endif %}
+{% endfor %}
+{% endif %}
+</body>
+</html>

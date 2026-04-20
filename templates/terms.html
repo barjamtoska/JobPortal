@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Kushtet e Shërbimit{% endblock %}
+
+{% block content %}
+<div style="max-width:800px; margin:40px auto; padding:0 24px 80px;">
+
+  <div style="margin-bottom:40px;">
+    <span style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);">Dokumenti Ligjor</span>
+    <h1 style="font-family:var(--font-head);font-size:2rem;font-weight:800;color:var(--navy);margin:8px 0 12px;">Kushtet e Shërbimit</h1>
+    <p style="color:var(--muted);font-size:.88rem;">Përditësuar së fundmi: Mars 2025</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:32px;">
+
+    <!-- 1 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        1. Pranimi i Kushteve
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;">
+        Duke përdorur platformën JobPortal, ju pranoni të jeni të lidhur nga këto Kushte të Shërbimit. Nëse nuk pajtoheni me ndonjë pjesë të këtyre kushteve, nuk mund të aksesoni shërbimin.
+      </p>
+    </div>
+
+    <!-- 2 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        2. Llogaritë e Përdoruesve
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;margin-bottom:12px;">
+        Kur krijoni një llogari, duhet të siguroni informacion të saktë dhe të plotë. Ju jeni përgjegjës për:
+      </p>
+      <ul style="display:flex;flex-direction:column;gap:8px;padding-left:8px;">
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Ruajtjen e konfidencialitetit të fjalëkalimit tuaj
+        </li>
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Të gjitha aktivitetet që ndodhin nën llogarinë tuaj
+        </li>
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Njoftimin e menjëhershëm për çdo përdorim të paautorizuar
+        </li>
+      </ul>
+    </div>
+
+    <!-- 3 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        3. Rregullat e Publikimit të Punëve
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;margin-bottom:12px;">
+        Punëdhënësit që publikojnë vende pune duhet të respektojnë rregullat e mëposhtme:
+      </p>
+      <ul style="display:flex;flex-direction:column;gap:8px;padding-left:8px;">
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Të gjitha vendet e punës duhet të jenë reale dhe të ligjshme
+        </li>
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Ndalohet publikimi i ofertave mashtruese ose diskriminuese
+        </li>
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          Informacioni mbi pagën dhe kushtet e punës duhet të jetë i saktë
+        </li>
+        <li style="font-size:.9rem;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+          <span style="color:var(--green2);font-weight:700;flex-shrink:0;">→</span>
+          JobPortal rezervon të drejtën të heqë çdo publikim që shkel rregullat
+        </li>
+      </ul>
+    </div>
+
+    <!-- 4 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        4. Privatësia e të Dhënave
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;">
+        JobPortal mbledh dhe përpunon të dhëna personale në përputhje me legjislacionin shqiptar për mbrojtjen e të dhënave. CV-të dhe informacionet personale të kandidatëve ndahen vetëm me punëdhënësit për të cilët aplikohet. Ne nuk shesim dhe nuk ndajmë të dhënat tuaja me palë të treta pa pëlqimin tuaj.
+      </p>
+    </div>
+
+    <!-- 5 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        5. Kufizimi i Përgjegjësisë
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;">
+        JobPortal vepron si ndërmjetës ndërmjet kandidatëve dhe punëdhënësve. Ne nuk garantojmë punësimin dhe nuk jemi përgjegjës për vendimet e punësimit të marra nga punëdhënësit. Platforma ofrohet "ashtu siç është" pa garanci të asnjë lloji.
+      </p>
+    </div>
+
+    <!-- 6 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        6. Ndryshimet e Kushteve
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;">
+        JobPortal rezervon të drejtën të ndryshojë këto kushte në çdo kohë. Ndryshimet do të njoftohen me email dhe do të hyjnë në fuqi 30 ditë pas njoftimit. Vazhdimi i përdorimit të platformës pas ndryshimeve nënkupton pranimin e kushteve të reja.
+      </p>
+    </div>
+
+    <!-- 7 -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;">
+      <h2 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:12px;">
+        7. Kontakt
+      </h2>
+      <p style="font-size:.9rem;color:var(--text);line-height:1.8;">
+        Për çdo pyetje lidhur me këto kushte, na kontaktoni:
+      </p>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+        <span style="font-size:.9rem;color:var(--text);">📧 <a href="mailto:info@jobportal.al" style="color:var(--green);font-weight:600;">info@jobportal.al</a></span>
+        <span style="font-size:.9rem;color:var(--text);">📍 Rr. Ismail Qemali, Nr. 12, Tiranë, Shqipëri</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div style="margin-top:40px;text-align:center;padding:32px;background:var(--navy);border-radius:14px;">
+    <p style="color:rgba(255,255,255,.7);font-size:.88rem;margin-bottom:16px;">
+      Duke u regjistruar, ju pranoni këto kushte të shërbimit.
+    </p>
+    <a href="{% url 'login' %}?tab=register"
+       style="display:inline-block;padding:10px 28px;background:var(--green2);color:#fff;border-radius:9px;font-weight:600;font-size:.9rem;text-decoration:none;">
+      Regjistrohu Tani →
+    </a>
+  </div>
+
+</div>
+{% endblock %}

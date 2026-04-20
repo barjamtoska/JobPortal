@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ndrysho — {{ job.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width:760px; margin:40px auto; padding:0 24px 80px;">
+
+  <div style="margin-bottom:24px;">
+    <a href="{% url 'dashboard' %}" style="color:var(--green);font-size:.85rem;">← Dashboard</a>
+  </div>
+
+  <h1 style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy);margin-bottom:28px;">
+    ✏️ Ndrysho — {{ job.title }}
+  </h1>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <!-- Informacion Bazë -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;">
+      <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+        📋 Informacion Bazë
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-group">
+          <label class="form-label">Titulli i Pozicionit *</label>
+          <input type="text" name="title" class="form-input" value="{{ job.title }}" required/>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label class="form-label">Kategoria *</label>
+            <select name="category" class="form-input" required>
+              {% for val, label in categories %}
+                <option value="{{ val }}" {% if job.category == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lloji i Kontratës *</label>
+            <select name="contract_type" class="form-input" required>
+              {% for val, label in contracts %}
+                <option value="{{ val }}" {% if job.contract_type == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label class="form-label">Vendndodhja *</label>
+            <select name="location" class="form-input" required>
+              {% for val, label in cities %}
+                <option value="{{ val }}" {% if job.location == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Eksperienca</label>
+            <select name="experience" class="form-input">
+              {% for val, label in experiences %}
+                <option value="{{ val }}" {% if job.experience == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label class="form-label">Paga Min (ALL/muaj)</label>
+            <input type="number" name="salary_min" class="form-input" value="{{ job.salary_min|default:'' }}" step="5000"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Paga Max (ALL/muaj)</label>
+            <input type="number" name="salary_max" class="form-input" value="{{ job.salary_max|default:'' }}" step="5000"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Afati i Aplikimit</label>
+          <input type="date" name="deadline" class="form-input" value="{{ job.deadline|default:'' }}"/>
+        </div>
+
+        <div style="display:flex;gap:20px;flex-wrap:wrap;padding-top:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer;">
+            <input type="checkbox" name="is_remote" style="width:16px;height:16px;accent-color:var(--green2);"
+                   {% if job.is_remote %}checked{% endif %}/>
+            🌍 Remote / Hibrid
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer;">
+            <input type="checkbox" name="is_urgent" style="width:16px;height:16px;accent-color:var(--green2);"
+                   {% if job.is_urgent %}checked{% endif %}/>
+            🔴 Urgjent
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Përshkrimi -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;">
+      <div style="font-family:var(--font-head);font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+        📝 Përshkrimi & Detajet
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="form-group">
+          <label class="form-label">Përshkrimi i Punës *</label>
+          <textarea name="description" class="form-input" rows="6" required>{{ job.description }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kualifikimet e Kërkuara</label>
+          <textarea name="requirements" class="form-input" rows="5">{{ job.requirements }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Përfitimet e Ofruara</label>
+          <textarea name="benefits" class="form-input" rows="4">{{ job.benefits }}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Butona -->
+    <div style="display:flex;gap:12px;">
+      <button type="submit" class="btn-submit">
+        💾 Ruaj Ndryshimet
+      </button>
+      <a href="{% url 'dashboard' %}" class="btn-outline-cancel">Anulo</a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
